@@ -6,7 +6,7 @@ const XLSX = XlsxModule.default ?? XlsxModule;
 
 const workbookPath = path.resolve('data/charlas-sinteticas.xlsx');
 const outputPath = path.resolve('public/data/charlas.json');
-const requiredColumns = ['Region', 'Lugar', 'ColegioLocacion', 'CantidaddeAlumnos'];
+const requiredColumns = ['Año', 'Region', 'Lugar', 'ColegioLocacion', 'CantidaddeAlumnos'];
 
 const workbook = XLSX.readFile(workbookPath, { cellDates: true });
 const sheet = workbook.Sheets[workbook.SheetNames[0]];
@@ -18,11 +18,13 @@ if (missing.length) {
 }
 
 const charlas = rows.map((row, index) => {
+  const year = Number(row.Año);
   const alumnos = Number(row.CantidaddeAlumnos);
-  if (!row.Region || !row.Lugar || !row.ColegioLocacion || !Number.isFinite(alumnos) || alumnos < 0) {
-    throw new Error(`Fila ${index + 2}: completa Región, Lugar, ColegioLocacion y CantidaddeAlumnos.`);
+  if (!Number.isInteger(year) || year < 2000 || !row.Region || !row.Lugar || !row.ColegioLocacion || !Number.isFinite(alumnos) || alumnos < 0) {
+    throw new Error(`Fila ${index + 2}: completa Año, Región, Lugar, ColegioLocacion y CantidaddeAlumnos.`);
   }
   return {
+    Año: year,
     Region: String(row.Region).trim(),
     Lugar: String(row.Lugar).trim(),
     ColegioLocacion: String(row.ColegioLocacion).trim(),

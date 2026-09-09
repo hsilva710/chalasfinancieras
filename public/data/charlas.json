@@ -1,98 +1,226 @@
 [
   {
-    "Region": "Arica y Parinacota",
-    "Lugar": "Arica",
-    "ColegioLocacion": "Colegio San Marcos",
+    "Año": 2024,
+    "Region": "Metropolitana de Santiago",
+    "Lugar": "RM",
+    "ColegioLocacion": "Escuela Gendarmería",
+    "CantidaddeAlumnos": 179
+  },
+  {
+    "Año": 2024,
+    "Region": "Metropolitana de Santiago",
+    "Lugar": "RM",
+    "ColegioLocacion": "Escuela Marques de Ovando",
+    "CantidaddeAlumnos": 55
+  },
+  {
+    "Año": 2024,
+    "Region": "Metropolitana de Santiago",
+    "Lugar": "RM",
+    "ColegioLocacion": "Escuela Villaseca",
+    "CantidaddeAlumnos": 73
+  },
+  {
+    "Año": 2024,
+    "Region": "Metropolitana de Santiago",
+    "Lugar": "RM",
+    "ColegioLocacion": "Escuela Humberto Moreno",
+    "CantidaddeAlumnos": 72
+  },
+  {
+    "Año": 2024,
+    "Region": "Metropolitana de Santiago",
+    "Lugar": "RM",
+    "ColegioLocacion": "Escuela Politécnica Aeronáutica FACH",
+    "CantidaddeAlumnos": 53
+  },
+  {
+    "Año": 2024,
+    "Region": "Metropolitana de Santiago",
+    "Lugar": "RM",
+    "ColegioLocacion": "Liceo Nuestra Sra. de las Mercedes",
+    "CantidaddeAlumnos": 151
+  },
+  {
+    "Año": 2024,
+    "Region": "Metropolitana de Santiago",
+    "Lugar": "RM",
+    "ColegioLocacion": "Dirigentes Sindicato de la FTC CODELCO",
+    "CantidaddeAlumnos": 11
+  },
+  {
+    "Año": 2024,
+    "Region": "Los Lagos",
+    "Lugar": "Puerto Montt",
+    "ColegioLocacion": "AIEP Dirigentes Sociales",
+    "CantidaddeAlumnos": 29
+  },
+  {
+    "Año": 2024,
+    "Region": "O'Higgins",
+    "Lugar": "Paredones",
+    "ColegioLocacion": "Escuela Mercedes Urzua",
+    "CantidaddeAlumnos": 64
+  },
+  {
+    "Año": 2024,
+    "Region": "Coquimbo",
+    "Lugar": "Vicuña",
+    "ColegioLocacion": "Escuela Juan Rendic",
+    "CantidaddeAlumnos": 32
+  },
+  {
+    "Año": 2024,
+    "Region": "Coquimbo",
+    "Lugar": "Vicuña",
+    "ColegioLocacion": "Escuela Federico Barnes Payne",
+    "CantidaddeAlumnos": 25
+  },
+  {
+    "Año": 2024,
+    "Region": "Coquimbo",
+    "Lugar": "Vicuña",
+    "ColegioLocacion": "Escuela Neftali Reyes Basoalto",
+    "CantidaddeAlumnos": 33
+  },
+  {
+    "Año": 2024,
+    "Region": "Coquimbo",
+    "Lugar": "La Serena",
+    "ColegioLocacion": "AIEP Dirigentes Sociales",
+    "CantidaddeAlumnos": 23
+  },
+  {
+    "Año": 2024,
+    "Region": "Magallanes",
+    "Lugar": "Punta Arenas",
+    "ColegioLocacion": "Liceo Polivalente Sara Braun",
+    "CantidaddeAlumnos": 60
+  },
+  {
+    "Año": 2024,
+    "Region": "Magallanes",
+    "Lugar": "Punta Arenas",
+    "ColegioLocacion": "Escuela Pedro Sarmiento de Gamboa",
+    "CantidaddeAlumnos": 28
+  },
+  {
+    "Año": 2024,
+    "Region": "Magallanes",
+    "Lugar": "Punta Arenas",
+    "ColegioLocacion": "Escuela Dieciocho de Septiembre",
     "CantidaddeAlumnos": 96
   },
   {
-    "Region": "Tarapacá",
-    "Lugar": "Iquique",
-    "ColegioLocacion": "Liceo Bicentenario Juan Pablo II",
-    "CantidaddeAlumnos": 134
+    "Año": 2024,
+    "Region": "Magallanes",
+    "Lugar": "Punta Arenas",
+    "ColegioLocacion": "Escuela Patagonia",
+    "CantidaddeAlumnos": 98
   },
   {
-    "Region": "Antofagasta",
-    "Lugar": "Antofagasta",
-    "ColegioLocacion": "Colegio Santa Emilia",
-    "CantidaddeAlumnos": 112
+    "Año": 2024,
+    "Region": "Magallanes",
+    "Lugar": "Punta Arenas",
+    "ColegioLocacion": "Escuela Portugal",
+    "CantidaddeAlumnos": 69
   },
   {
-    "Region": "Antofagasta",
-    "Lugar": "Calama",
-    "ColegioLocacion": "Liceo América",
-    "CantidaddeAlumnos": 88
-  },
-  {
-    "Region": "Coquimbo",
-    "Lugar": "La Serena",
-    "ColegioLocacion": "Colegio Gabriela Mistral",
-    "CantidaddeAlumnos": 142
-  },
-  {
-    "Region": "Valparaíso",
-    "Lugar": "Valparaíso",
-    "ColegioLocacion": "Liceo Eduardo de la Barra",
-    "CantidaddeAlumnos": 118
-  },
-  {
-    "Region": "Valparaíso",
-    "Lugar": "Quilpué",
-    "ColegioLocacion": "Colegio Los Pinos",
-    "CantidaddeAlumnos": 76
-  },
-  {
-    "Region": "Metropolitana de Santiago",
-    "Lugar": "Santiago",
-    "ColegioLocacion": "Liceo República de Brasil",
-    "CantidaddeAlumnos": 165
-  },
-  {
-    "Region": "Metropolitana de Santiago",
-    "Lugar": "Puente Alto",
-    "ColegioLocacion": "Colegio Monte Andino",
-    "CantidaddeAlumnos": 121
-  },
-  {
-    "Region": "O'Higgins",
-    "Lugar": "Rancagua",
-    "ColegioLocacion": "Instituto O'Higgins",
-    "CantidaddeAlumnos": 109
-  },
-  {
-    "Region": "Maule",
-    "Lugar": "Talca",
-    "ColegioLocacion": "Liceo Abate Molina",
-    "CantidaddeAlumnos": 153
-  },
-  {
-    "Region": "Ñuble",
-    "Lugar": "Chillán",
-    "ColegioLocacion": "Colegio Bicentenario Padre Hurtado",
-    "CantidaddeAlumnos": 94
-  },
-  {
+    "Año": 2024,
     "Region": "Biobío",
     "Lugar": "Concepción",
-    "ColegioLocacion": "Liceo Enrique Molina",
-    "CantidaddeAlumnos": 178
+    "ColegioLocacion": "Sindicato SIL Walmart",
+    "CantidaddeAlumnos": 78
   },
   {
-    "Region": "Biobío",
-    "Lugar": "Los Ángeles",
-    "ColegioLocacion": "Colegio San Rafael Arcángel",
-    "CantidaddeAlumnos": 102
+    "Año": 2025,
+    "Region": "Metropolitana de Santiago",
+    "Lugar": "RM",
+    "ColegioLocacion": "Escuela Particular N°46 Graciela Letelier de Ibáñez",
+    "CantidaddeAlumnos": 100
   },
   {
-    "Region": "La Araucanía",
-    "Lugar": "Temuco",
-    "ColegioLocacion": "Liceo Pablo Neruda",
-    "CantidaddeAlumnos": 146
+    "Año": 2025,
+    "Region": "Metropolitana de Santiago",
+    "Lugar": "RM",
+    "ColegioLocacion": "Jardín Infantil Colón (BancoEstado)",
+    "CantidaddeAlumnos": 21
   },
   {
-    "Region": "Los Lagos",
-    "Lugar": "Puerto Montt",
-    "ColegioLocacion": "Colegio Pumahue",
-    "CantidaddeAlumnos": 127
+    "Año": 2025,
+    "Region": "Metropolitana de Santiago",
+    "Lugar": "RM",
+    "ColegioLocacion": "Liceo Profesional Abdón Cifuentes",
+    "CantidaddeAlumnos": 220
+  },
+  {
+    "Año": 2025,
+    "Region": "Metropolitana de Santiago",
+    "Lugar": "RM",
+    "ColegioLocacion": "Escuela Lazaro de la Salle",
+    "CantidaddeAlumnos": 45
+  },
+  {
+    "Año": 2025,
+    "Region": "Metropolitana de Santiago",
+    "Lugar": "RM",
+    "ColegioLocacion": "Alumnos de la Academia Politécnica Aeronáutica",
+    "CantidaddeAlumnos": 4
+  },
+  {
+    "Año": 2025,
+    "Region": "Metropolitana de Santiago",
+    "Lugar": "RM",
+    "ColegioLocacion": "Colegio Sagrados Corazones",
+    "CantidaddeAlumnos": 100
+  },
+  {
+    "Año": 2025,
+    "Region": "Tarapacá",
+    "Lugar": "Iquique",
+    "ColegioLocacion": "Liceo María Auxiliadora",
+    "CantidaddeAlumnos": 302
+  },
+  {
+    "Año": 2026,
+    "Region": "Metropolitana de Santiago",
+    "Lugar": "RM",
+    "ColegioLocacion": "Jardín Infantil Colón (BancoEstado)",
+    "CantidaddeAlumnos": 30
+  },
+  {
+    "Año": 2026,
+    "Region": "Metropolitana de Santiago",
+    "Lugar": "RM",
+    "ColegioLocacion": "Escuela Consolidada Dávila",
+    "CantidaddeAlumnos": 50
+  },
+  {
+    "Año": 2026,
+    "Region": "O'Higgins",
+    "Lugar": "Paredones",
+    "ColegioLocacion": "Escuela Santa Ana de la Población",
+    "CantidaddeAlumnos": 10
+  },
+  {
+    "Año": 2026,
+    "Region": "O'Higgins",
+    "Lugar": "Paredones",
+    "ColegioLocacion": "Escuela Esmeralda de Cabecera",
+    "CantidaddeAlumnos": 8
+  },
+  {
+    "Año": 2026,
+    "Region": "O'Higgins",
+    "Lugar": "Paredones",
+    "ColegioLocacion": "Escuela las Carmelitas de El Quillay",
+    "CantidaddeAlumnos": 16
+  },
+  {
+    "Año": 2026,
+    "Region": "O'Higgins",
+    "Lugar": "Paredones",
+    "ColegioLocacion": "Escuela San Pedro de El Portero",
+    "CantidaddeAlumnos": 17
   }
 ]

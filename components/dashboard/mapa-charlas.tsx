@@ -5,7 +5,7 @@ import { ComposableMap, Geographies, Geography, Marker } from 'react-simple-maps
 import { Building2, ChevronRight, Hand, MapPin, RotateCcw, School, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-type Charla = { Region: string; Lugar: string; ColegioLocacion: string; CantidaddeAlumnos: number };
+type Charla = { Año: number; Region: string; Lugar: string; ColegioLocacion: string; CantidaddeAlumnos: number };
 type RegionMeta = { code: number; name: string; aliases: string[] };
 type WebMcpContext = {
   registerTool: (tool: {
@@ -54,6 +54,7 @@ const labelPositions: Record<number, { coordinates: [number, number]; side: 'lef
 export function MapaCharlas() {
   const [data, setData] = useState<Charla[]>([]);
   const [selectedCode, setSelectedCode] = useState<number | null>(null);
+  const [selectedYear, setSelectedYear] = useState<number | 'all'>('all');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [mapScale, setMapScale] = useState(830);
@@ -80,6 +81,10 @@ export function MapaCharlas() {
     if (metropolitanAudioRef.current) metropolitanAudioRef.current.currentTime = 0;
     setSelectedCode(null);
   }, []);
+  const selectYear = useCallback((year: number | 'all') => {
+    reset();
+    setSelectedYear(year);
+  }, [reset]);
   const selectRegion = useCallback((code: number) => {
     metropolitanAudioRef.current?.pause();
     if (metropolitanAudioRef.current) metropolitanAudioRef.current.currentTime = 0;
@@ -95,12 +100,15 @@ export function MapaCharlas() {
     return () => { window.clearTimeout(timeout); window.removeEventListener('pointerdown', extend); window.removeEventListener('keydown', extend); };
   }, [reset]);
 
+  const years = useMemo(() => [...new Set(data.map((charla) => Number(charla.Año)))].filter(Number.isFinite).sort((a, b) => a - b), [data]);
+  const yearOptions: Array<number | 'all'> = ['all', ...years];
+  const filteredData = useMemo(() => selectedYear === 'all' ? data : data.filter((charla) => Number(charla.Año) === selectedYear), [data, selectedYear]);
   const byRegion = useMemo(() => {
     const summary = new Map<number, Charla[]>();
-    data.forEach((charla) => { const region = resolveRegion(charla.Region); if (region) summary.set(region.code, [...(summary.get(region.code) ?? []), charla]); });
+    filteredData.forEach((charla) => { const region = resolveRegion(charla.Region); if (region) summary.set(region.code, [...(summary.get(region.code) ?? []), charla]); });
     return summary;
-  }, [data]);
-  const totalStudents = data.reduce((total, charla) => total + Number(charla.CantidaddeAlumnos || 0), 0);
+  }, [filteredData]);
+  const totalStudents = filteredData.reduce((total, charla) => total + Number(charla.CantidaddeAlumnos || 0), 0);
   const activeRegions = [...byRegion.values()].filter((charlas) => charlas.length > 0).length;
   const maxCharlas = Math.max(1, ...[...byRegion.values()].map((charlas) => charlas.length));
   const selectedRegion = regions.find((region) => region.code === selectedCode) ?? null;
@@ -135,11 +143,11 @@ export function MapaCharlas() {
     <div className="mx-auto flex min-h-screen max-w-[1600px] flex-col px-4 py-4 lg:h-full lg:overflow-hidden lg:px-7 lg:py-6">
       <header className="mb-4 flex flex-col gap-4 rounded-[1.4rem] bg-[#073b4c] px-5 py-5 text-white shadow-[0_16px_45px_rgba(7,59,76,0.16)] lg:mb-5 lg:flex-row lg:items-center lg:justify-between lg:px-7">
         <div><p className="mb-1 text-sm font-semibold tracking-[0.16em] text-teal-200 uppercase">Educación financiera</p><h1 className="text-2xl font-semibold tracking-tight lg:text-[2rem]">Charlas realizadas en Chile</h1></div>
-        <div className="flex items-center gap-3 rounded-2xl bg-white/10 px-4 py-3 text-base text-teal-50"><Hand className="size-6 shrink-0 text-teal-200" aria-hidden="true" /><span>Toca una región para ver su detalle</span></div>
+        <div className="flex flex-col items-start gap-3 lg:items-end"><div className="flex items-center gap-3 rounded-2xl bg-white/10 px-4 py-3 text-base text-teal-50"><Hand className="size-6 shrink-0 text-teal-200" aria-hidden="true" /><span>Toca una región para ver su detalle</span></div><div role="group" aria-label="Filtrar charlas por año" className="flex flex-wrap gap-2">{yearOptions.map((year) => { const isActive = selectedYear === year; const label = year === 'all' ? 'Todos los años' : String(year); return <button key={String(year)} type="button" aria-pressed={isActive} onClick={() => selectYear(year)} className={`min-h-11 rounded-full border px-4 text-sm font-semibold transition-colors focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring ${isActive ? 'border-primary bg-primary text-primary-foreground' : 'border-white/30 bg-white/10 text-white hover:bg-white/20'}`}>{label}</button>; })}</div></div>
       </header>
       <section aria-label="Resumen nacional" className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-3 lg:mb-5">
         <StatCard icon={<MapPin />} value={formatNumber(activeRegions)} label="regiones visitadas" loading={loading} />
-        <StatCard icon={<School />} value={formatNumber(data.length)} label="charlas realizadas" loading={loading} />
+        <StatCard icon={<School />} value={formatNumber(filteredData.length)} label="charlas realizadas" loading={loading} />
         <StatCard icon={<Users />} value={formatNumber(totalStudents)} label="alumnos alcanzados" loading={loading} />
       </section>
       <section className="grid min-h-0 flex-1 gap-4 lg:grid-cols-[minmax(0,1.45fr)_minmax(330px,0.78fr)] lg:grid-rows-[minmax(0,1fr)] lg:gap-5">
