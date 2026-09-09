@@ -25,7 +25,7 @@ const regions: RegionMeta[] = [
   { code: 2, name: 'Antofagasta', aliases: ['antofagasta'] }, { code: 3, name: 'Atacama', aliases: ['atacama'] },
   { code: 4, name: 'Coquimbo', aliases: ['coquimbo'] }, { code: 5, name: 'Valparaíso', aliases: ['valparaiso'] },
   { code: 13, name: 'Metropolitana de Santiago', aliases: ['metropolitana de santiago', 'metropolitana', 'santiago'] },
-  { code: 6, name: "O'Higgins", aliases: ['ohiggins', 'libertador bernardo ohiggins', 'libertador general bernardo ohiggins'] },
+  { code: 6, name: "O'Higgins", aliases: ['ohiggins', 'o higgins', 'libertador bernardo ohiggins', 'libertador general bernardo ohiggins'] },
   { code: 7, name: 'Maule', aliases: ['maule'] }, { code: 16, name: 'Ñuble', aliases: ['nuble'] },
   { code: 8, name: 'Biobío', aliases: ['biobio', 'bio bio'] }, { code: 9, name: 'La Araucanía', aliases: ['la araucania', 'araucania'] },
   { code: 14, name: 'Los Ríos', aliases: ['los rios'] }, { code: 10, name: 'Los Lagos', aliases: ['los lagos'] },
