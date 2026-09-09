@@ -39,7 +39,7 @@ const resolveRegion = (value: string) => {
   return regions.find((region) => region.aliases.some((alias) => clean === normalize(alias)));
 };
 const formatNumber = (value: number) => new Intl.NumberFormat('es-CL').format(value);
-const fillFor = (charlas: number, max: number, selected: boolean) => selected ? '#075985' : charlas === 0 ? '#dde8e9' : charlas / max > 0.72 ? '#0f766e' : charlas / max > 0.4 ? '#299d92' : '#78cbbd';
+const fillFor = (charlas: number, max: number, selected: boolean) => selected ? '#f97316' : charlas === 0 ? '#cbd5e1' : charlas / max > 0.72 ? '#0f766e' : '#0284c7';
 
 export function MapaCharlas() {
   const [data, setData] = useState<Charla[]>([]);
@@ -125,7 +125,7 @@ export function MapaCharlas() {
               })}</Geographies>
             </ComposableMap>}
           </div>
-          <div className="mt-4 flex flex-wrap items-center justify-between gap-3 px-1"><div className="flex items-center gap-2 text-sm font-medium text-slate-600"><span className="size-4 rounded-md bg-[#dde8e9] ring-1 ring-slate-300" /> Sin charlas <span className="ml-2 size-4 rounded-md bg-[#78cbbd]" /> Menor cobertura <span className="ml-2 size-4 rounded-md bg-[#0f766e]" /> Mayor cobertura</div><p className="text-sm text-slate-500">La selección se reinicia después de 90 segundos.</p></div>
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-3 px-1"><div className="flex items-center gap-2 text-sm font-medium text-slate-600"><span className="size-4 rounded-md bg-[#cbd5e1] ring-1 ring-slate-400" /> Sin charlas <span className="ml-2 size-4 rounded-md bg-[#0284c7]" /> 1 charla <span className="ml-2 size-4 rounded-md bg-[#0f766e]" /> 2 o más charlas</div><p className="text-sm text-slate-500">La selección se reinicia después de 90 segundos.</p></div>
         </section>
         <aside aria-live="polite" className="rounded-[1.5rem] bg-white p-5 shadow-[0_12px_35px_rgba(15,73,83,0.09)]">
           {selectedRegion ? <RegionDetail region={selectedRegion} charlas={selectedCharlas} students={selectedStudents} schools={selectedSchools} onClose={reset} /> : <Overview regionsWithActivity={regions.filter((region) => (byRegion.get(region.code) ?? []).length > 0)} byRegion={byRegion} onSelect={setSelectedCode} />}
