@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
 import { Building2, ChevronRight, Hand, MapPin, RotateCcw, School, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -47,6 +47,7 @@ export function MapaCharlas() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [mapScale, setMapScale] = useState(830);
+  const metropolitanAudioRef = useRef<HTMLAudioElement>(null);
 
   const loadData = useCallback(async () => {
     try {
@@ -65,6 +66,27 @@ export function MapaCharlas() {
   }, []);
 
   const reset = useCallback(() => setSelectedCode(null), []);
+  const selectRegion = useCallback((code: number) => {
+    if (code === 13 && selectedCode === 13 && metropolitanAudioRef.current) {
+      metropolitanAudioRef.current.pause();
+      metropolitanAudioRef.current.currentTime = 0;
+      void metropolitanAudioRef.current.play().catch(() => undefined);
+    }
+    setSelectedCode(code);
+  }, [selectedCode]);
+
+  useEffect(() => {
+    const audio = metropolitanAudioRef.current;
+    if (!audio) return;
+    if (selectedCode === 13) {
+      audio.currentTime = 0;
+      void audio.play().catch(() => undefined);
+    } else {
+      audio.pause();
+      audio.currentTime = 0;
+    }
+    return () => { audio.pause(); audio.currentTime = 0; };
+  }, [selectedCode]);
   useEffect(() => {
     let timeout = window.setTimeout(reset, 90000);
     const extend = () => { window.clearTimeout(timeout); timeout = window.setTimeout(reset, 90000); };
@@ -100,14 +122,15 @@ export function MapaCharlas() {
         const region = resolveRegion(input.region);
         if (!region) throw new Error(`No se reconoce la región: ${input.region}`);
         const charlas = byRegion.get(region.code) ?? [];
-        setSelectedCode(region.code);
+        selectRegion(region.code);
         return { region: region.name, charlas: charlas.length, alumnos: charlas.reduce((total, charla) => total + charla.CantidaddeAlumnos, 0) };
       },
     }, { signal: lifecycle.signal })).catch(() => undefined);
     return () => lifecycle.abort();
-  }, [byRegion]);
+  }, [byRegion, selectRegion]);
 
   return <main className="min-h-screen bg-[#eef5f5] text-slate-800 selection:bg-teal-200 lg:h-screen lg:overflow-hidden">
+    <audio ref={metropolitanAudioRef} src="/audio/region-metropolitana.mp3" preload="auto" aria-hidden="true" />
     <div className="mx-auto flex min-h-screen max-w-[1600px] flex-col px-4 py-4 lg:h-full lg:overflow-hidden lg:px-7 lg:py-6">
       <header className="mb-4 flex flex-col gap-4 rounded-[1.4rem] bg-[#073b4c] px-5 py-5 text-white shadow-[0_16px_45px_rgba(7,59,76,0.16)] lg:mb-5 lg:flex-row lg:items-center lg:justify-between lg:px-7">
         <div><p className="mb-1 text-sm font-semibold tracking-[0.16em] text-teal-200 uppercase">Educación financiera</p><h1 className="text-2xl font-semibold tracking-tight lg:text-[2rem]">Charlas realizadas en Chile</h1></div>
@@ -127,7 +150,7 @@ export function MapaCharlas() {
             {!loading && !error && <ComposableMap aria-label="Mapa de las regiones de Chile" className="h-full w-auto max-w-full -translate-y-4" projection="geoMercator" projectionConfig={{ center: [-71.1, -37.5], scale: mapScale }} width={560} height={700}>
               <Geographies geography="/chile-regiones.geojson">{({ geographies }) => geographies.map((geo) => {
                 const properties = geo.properties ?? {}; const code = Number(properties.codregion); const charlas = byRegion.get(code) ?? []; const isSelected = selectedCode === code; const region = regions.find((item) => item.code === code); const label = region?.name ?? properties.Region;
-                const activate = () => setSelectedCode(code);
+                const activate = () => selectRegion(code);
                 // oxlint-disable-next-line jsx-a11y(prefer-tag-over-role)
                 return <Geography key={geo.rsmKey} geography={geo} aria-label={`${label}: ${charlas.length} charlas`} role="button" tabIndex={0} fill={fillFor(charlas.length, maxCharlas, isSelected)} stroke="#ffffff" strokeWidth={0.75} onClick={activate} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); activate(); } }} style={{ cursor: 'pointer', outline: 'none' }} />;
               })}</Geographies>
@@ -136,7 +159,7 @@ export function MapaCharlas() {
           <div className="mt-4 flex flex-wrap items-center justify-between gap-3 px-1"><div className="flex items-center gap-2 text-sm font-medium text-slate-600"><span className="size-4 rounded-md bg-[#cbd5e1] ring-1 ring-slate-400" /> Sin charlas <span className="ml-2 size-4 rounded-md bg-[#0284c7]" /> 1 charla <span className="ml-2 size-4 rounded-md bg-[#0f766e]" /> 2 o más charlas</div><p className="text-sm text-slate-500">La selección se reinicia después de 90 segundos.</p></div>
         </section>
         <aside aria-live="polite" className="rounded-[1.5rem] bg-white p-5 shadow-[0_12px_35px_rgba(15,73,83,0.09)] lg:min-h-0 lg:overflow-y-auto">
-          {selectedRegion ? <RegionDetail region={selectedRegion} charlas={selectedCharlas} students={selectedStudents} schools={selectedSchools} onClose={reset} /> : <Overview regionsWithActivity={regions.filter((region) => (byRegion.get(region.code) ?? []).length > 0)} byRegion={byRegion} onSelect={setSelectedCode} />}
+          {selectedRegion ? <RegionDetail region={selectedRegion} charlas={selectedCharlas} students={selectedStudents} schools={selectedSchools} onClose={reset} /> : <Overview regionsWithActivity={regions.filter((region) => (byRegion.get(region.code) ?? []).length > 0)} byRegion={byRegion} onSelect={selectRegion} />}
         </aside>
       </section>
     </div>
