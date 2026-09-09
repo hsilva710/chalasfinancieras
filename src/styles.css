@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;900&family=IBM+Plex+Mono:wght@400;600&family=Petrona:wght@400;600&display=swap');
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
@@ -7,7 +8,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: "Figtree", "Helvetica Neue", Arial, sans-serif;
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -44,39 +45,40 @@
 }
 
 :root {
-  --background: oklch(0.97 0.012 214);
-  --foreground: oklch(0.21 0.028 229);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.21 0.028 229);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.21 0.028 229);
-  --primary: oklch(0.45 0.11 198);
-  --primary-foreground: oklch(0.99 0.005 214);
-  --secondary: oklch(0.91 0.03 193);
-  --secondary-foreground: oklch(0.24 0.05 207);
-  --muted: oklch(0.93 0.012 214);
-  --muted-foreground: oklch(0.48 0.025 222);
-  --accent: oklch(0.9 0.04 181);
-  --accent-foreground: oklch(0.22 0.05 202);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.86 0.018 214);
-  --input: oklch(0.86 0.018 214);
-  --ring: oklch(0.56 0.12 197);
-  --chart-1: oklch(0.52 0.12 199);
-  --chart-2: oklch(0.63 0.11 193);
-  --chart-3: oklch(0.75 0.1 179);
-  --chart-4: oklch(0.84 0.08 163);
-  --chart-5: oklch(0.89 0.05 146);
+  --background: #f7f9fa;
+  --foreground: #4c5761;
+  --card: #ffffff;
+  --card-foreground: #343e46;
+  --popover: #ffffff;
+  --popover-foreground: #343e46;
+  --primary: #ff7900;
+  --primary-foreground: #ffffff;
+  --secondary: #eef1f3;
+  --secondary-foreground: #343e46;
+  --muted: #f7f9fa;
+  --muted-foreground: #6b7681;
+  --accent: #fff1e0;
+  --accent-foreground: #b85600;
+  --destructive: #ff2318;
+  --destructive-foreground: #ffffff;
+  --border: #e1e5e9;
+  --input: #c4cad0;
+  --ring: #004dff;
+  --chart-1: #ff7900;
+  --chart-2: #28b4bc;
+  --chart-3: #ffb600;
+  --chart-4: #358dc9;
+  --chart-5: #d3bc9c;
   --radius: 1rem;
-  --sidebar: oklch(0.985 0.005 214);
-  --sidebar-foreground: oklch(0.21 0.028 229);
-  --sidebar-primary: oklch(0.45 0.11 198);
-  --sidebar-primary-foreground: oklch(0.99 0.005 214);
-  --sidebar-accent: oklch(0.93 0.02 196);
-  --sidebar-accent-foreground: oklch(0.22 0.05 202);
-  --sidebar-border: oklch(0.86 0.018 214);
-  --sidebar-ring: oklch(0.56 0.12 197);
-  background: #f2f7f8;
+  --sidebar: #f7f9fa;
+  --sidebar-foreground: #343e46;
+  --sidebar-primary: #ff7900;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #fff1e0;
+  --sidebar-accent-foreground: #b85600;
+  --sidebar-border: #e1e5e9;
+  --sidebar-ring: #004dff;
+  background: #f7f9fa;
 }
 
 @layer base {
@@ -84,7 +86,7 @@
   body {
     @apply bg-background text-foreground;
     min-width: 320px;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-sans);
     -webkit-tap-highlight-color: transparent;
   }
 }
