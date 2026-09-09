@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
+import { ComposableMap, Geographies, Geography, Marker } from 'react-simple-maps';
 import { Building2, ChevronRight, Hand, MapPin, RotateCcw, School, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -40,6 +40,16 @@ const resolveRegion = (value: string) => {
 };
 const formatNumber = (value: number) => new Intl.NumberFormat('es-CL').format(value);
 const fillFor = (charlas: number, max: number, selected: boolean) => selected ? '#f97316' : charlas === 0 ? '#cbd5e1' : charlas / max > 0.72 ? '#0f766e' : '#0284c7';
+const labelPositions: Record<number, { coordinates: [number, number]; side: 'left' | 'right' }> = {
+  15: { coordinates: [-69.5, -18.5], side: 'right' }, 1: { coordinates: [-69.7, -20.4], side: 'left' },
+  2: { coordinates: [-69.1, -23.4], side: 'right' }, 3: { coordinates: [-70.2, -27.3], side: 'left' },
+  4: { coordinates: [-71.0, -30.2], side: 'right' }, 5: { coordinates: [-71.0, -33.0], side: 'left' },
+  13: { coordinates: [-70.7, -33.5], side: 'right' }, 6: { coordinates: [-70.6, -34.5], side: 'left' },
+  7: { coordinates: [-71.3, -35.5], side: 'right' }, 16: { coordinates: [-72.4, -36.5], side: 'left' },
+  8: { coordinates: [-73.0, -37.2], side: 'right' }, 9: { coordinates: [-72.5, -38.8], side: 'left' },
+  14: { coordinates: [-72.8, -40.2], side: 'right' }, 10: { coordinates: [-73.0, -42.3], side: 'left' },
+  11: { coordinates: [-72.0, -46.5], side: 'right' }, 12: { coordinates: [-71.0, -52.2], side: 'left' },
+};
 
 export function MapaCharlas() {
   const [data, setData] = useState<Charla[]>([]);
@@ -134,17 +144,28 @@ export function MapaCharlas() {
       </section>
       <section className="grid min-h-0 flex-1 gap-4 lg:grid-cols-[minmax(0,1.45fr)_minmax(330px,0.78fr)] lg:grid-rows-[minmax(0,1fr)] lg:gap-5">
         <section aria-label="Mapa interactivo de Chile" className="flex min-h-[570px] flex-col rounded-[1.5rem] bg-white p-4 shadow-[0_12px_35px_rgba(15,73,83,0.09)] lg:h-full lg:min-h-0 lg:p-5">
-          <div className="mb-3 flex items-center justify-between gap-3"><div><h2 className="text-xl font-semibold tracking-tight text-slate-800">Mapa de cobertura</h2><p className="mt-1 text-sm text-slate-500">El color indica la cantidad de charlas por región.</p></div><Button aria-label="Volver a la vista nacional" className="h-12 shrink-0 rounded-xl border-[#c7dcde] px-4 text-base text-[#075985] hover:bg-[#eef8f7]" variant="outline" onClick={reset}><RotateCcw className="size-5" /><span className="hidden sm:inline">Ver todo Chile</span></Button></div>
+          <div className="mb-3 flex items-center justify-between gap-3"><div><h2 className="text-xl font-semibold tracking-tight text-slate-800">Mapa de cobertura</h2><p className="mt-1 text-sm text-slate-500">El color y las etiquetas indican la cantidad de charlas por región.</p></div><Button aria-label="Volver a la vista nacional" className="h-12 shrink-0 rounded-xl border-[#c7dcde] px-4 text-base text-[#075985] hover:bg-[#eef8f7]" variant="outline" onClick={reset}><RotateCcw className="size-5" /><span className="hidden sm:inline">Ver todo Chile</span></Button></div>
           <div className="relative flex min-h-[430px] flex-1 items-center justify-center overflow-hidden rounded-2xl border border-[#d8e7e8] bg-[radial-gradient(circle_at_40%_15%,#f8fdfc_0%,#eef7f6_52%,#e6f0f0_100%)] px-2 py-3 lg:min-h-0">
             {loading && <p className="text-lg font-medium text-slate-500">Cargando mapa…</p>}
             {error && <div className="text-center"><p className="mb-3 text-lg font-medium text-slate-700">No pudimos cargar las charlas.</p><Button className="h-12 rounded-xl px-5 text-base" onClick={() => void loadData()}>Reintentar</Button></div>}
             {!loading && !error && <ComposableMap aria-label="Mapa de las regiones de Chile" className="h-full w-auto max-w-full -translate-y-4" projection="geoMercator" projectionConfig={{ center: [-71.1, -37.5], scale: mapScale }} width={560} height={700}>
-              <Geographies geography="/chile-regiones.geojson">{({ geographies }) => geographies.map((geo) => {
-                const properties = geo.properties ?? {}; const code = Number(properties.codregion); const charlas = byRegion.get(code) ?? []; const isSelected = selectedCode === code; const region = regions.find((item) => item.code === code); const label = region?.name ?? properties.Region;
-                const activate = () => selectRegion(code);
-                // oxlint-disable-next-line jsx-a11y(prefer-tag-over-role)
-                return <Geography key={geo.rsmKey} geography={geo} aria-label={`${label}: ${charlas.length} charlas`} role="button" tabIndex={0} fill={fillFor(charlas.length, maxCharlas, isSelected)} stroke="#ffffff" strokeWidth={0.75} onClick={activate} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); activate(); } }} style={{ cursor: 'pointer', outline: 'none' }} />;
-              })}</Geographies>
+              <Geographies geography="/chile-regiones.geojson">{({ geographies }) => <>
+                {geographies.map((geo) => {
+                  const properties = geo.properties ?? {}; const code = Number(properties.codregion); const charlas = byRegion.get(code) ?? []; const isSelected = selectedCode === code; const region = regions.find((item) => item.code === code); const label = region?.name ?? properties.Region;
+                  const activate = () => selectRegion(code);
+                  // oxlint-disable-next-line jsx-a11y(prefer-tag-over-role)
+                  return <Geography key={geo.rsmKey} geography={geo} aria-label={`${label}: ${charlas.length} charlas`} role="button" tabIndex={0} fill={fillFor(charlas.length, maxCharlas, isSelected)} stroke="#ffffff" strokeWidth={0.75} onClick={activate} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); activate(); } }} style={{ cursor: 'pointer', outline: 'none' }} />;
+                })}
+                {geographies.map((geo) => {
+                  const code = Number(geo.properties?.codregion); const position = labelPositions[code];
+                  if (!position) return null;
+                  const count = (byRegion.get(code) ?? []).length; const side = position.side === 'right' ? 1 : -1; const x = side * 39; const fill = fillFor(count, maxCharlas, selectedCode === code);
+                  return <Marker key={`label-${code}`} coordinates={position.coordinates} pointerEvents="none" aria-label={`${regions.find((region) => region.code === code)?.name}: ${count} charlas`}>
+                    <line x1={0} y1={0} x2={side * 31} y2={0} stroke="#64748b" strokeWidth={1.2} />
+                    <g transform={`translate(${x}, -11)`}><rect x={side === 1 ? 0 : -28} y={0} width={28} height={22} rx={11} fill="#ffffff" stroke={fill} strokeWidth={1.4} /><text x={side === 1 ? 14 : -14} y={15} textAnchor="middle" fill="#0f172a" fontSize={13} fontWeight={700}>{count}</text></g>
+                  </Marker>;
+                })}
+              </>}</Geographies>
             </ComposableMap>}
           </div>
           <div className="mt-4 flex flex-wrap items-center justify-between gap-3 px-1"><div className="flex items-center gap-2 text-sm font-medium text-slate-600"><span className="size-4 rounded-md bg-[#cbd5e1] ring-1 ring-slate-400" /> Sin charlas <span className="ml-2 size-4 rounded-md bg-[#0284c7]" /> 1 charla <span className="ml-2 size-4 rounded-md bg-[#0f766e]" /> 2 o más charlas</div><p className="text-sm text-slate-500">La selección se reinicia después de 90 segundos.</p></div>
