@@ -1,0 +1,98 @@
+[
+  {
+    "Region": "Arica y Parinacota",
+    "Lugar": "Arica",
+    "ColegioLocacion": "Colegio San Marcos",
+    "CantidaddeAlumnos": 96
+  },
+  {
+    "Region": "Tarapacá",
+    "Lugar": "Iquique",
+    "ColegioLocacion": "Liceo Bicentenario Juan Pablo II",
+    "CantidaddeAlumnos": 134
+  },
+  {
+    "Region": "Antofagasta",
+    "Lugar": "Antofagasta",
+    "ColegioLocacion": "Colegio Santa Emilia",
+    "CantidaddeAlumnos": 112
+  },
+  {
+    "Region": "Antofagasta",
+    "Lugar": "Calama",
+    "ColegioLocacion": "Liceo América",
+    "CantidaddeAlumnos": 88
+  },
+  {
+    "Region": "Coquimbo",
+    "Lugar": "La Serena",
+    "ColegioLocacion": "Colegio Gabriela Mistral",
+    "CantidaddeAlumnos": 142
+  },
+  {
+    "Region": "Valparaíso",
+    "Lugar": "Valparaíso",
+    "ColegioLocacion": "Liceo Eduardo de la Barra",
+    "CantidaddeAlumnos": 118
+  },
+  {
+    "Region": "Valparaíso",
+    "Lugar": "Quilpué",
+    "ColegioLocacion": "Colegio Los Pinos",
+    "CantidaddeAlumnos": 76
+  },
+  {
+    "Region": "Metropolitana de Santiago",
+    "Lugar": "Santiago",
+    "ColegioLocacion": "Liceo República de Brasil",
+    "CantidaddeAlumnos": 165
+  },
+  {
+    "Region": "Metropolitana de Santiago",
+    "Lugar": "Puente Alto",
+    "ColegioLocacion": "Colegio Monte Andino",
+    "CantidaddeAlumnos": 121
+  },
+  {
+    "Region": "O'Higgins",
+    "Lugar": "Rancagua",
+    "ColegioLocacion": "Instituto O'Higgins",
+    "CantidaddeAlumnos": 109
+  },
+  {
+    "Region": "Maule",
+    "Lugar": "Talca",
+    "ColegioLocacion": "Liceo Abate Molina",
+    "CantidaddeAlumnos": 153
+  },
+  {
+    "Region": "Ñuble",
+    "Lugar": "Chillán",
+    "ColegioLocacion": "Colegio Bicentenario Padre Hurtado",
+    "CantidaddeAlumnos": 94
+  },
+  {
+    "Region": "Biobío",
+    "Lugar": "Concepción",
+    "ColegioLocacion": "Liceo Enrique Molina",
+    "CantidaddeAlumnos": 178
+  },
+  {
+    "Region": "Biobío",
+    "Lugar": "Los Ángeles",
+    "ColegioLocacion": "Colegio San Rafael Arcángel",
+    "CantidaddeAlumnos": 102
+  },
+  {
+    "Region": "La Araucanía",
+    "Lugar": "Temuco",
+    "ColegioLocacion": "Liceo Pablo Neruda",
+    "CantidaddeAlumnos": 146
+  },
+  {
+    "Region": "Los Lagos",
+    "Lugar": "Puerto Montt",
+    "ColegioLocacion": "Colegio Pumahue",
+    "CantidaddeAlumnos": 127
+  }
+]
