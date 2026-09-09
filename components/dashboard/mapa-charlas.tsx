@@ -65,28 +65,19 @@ export function MapaCharlas() {
     return () => window.removeEventListener('resize', fitMapToScreen);
   }, []);
 
-  const reset = useCallback(() => setSelectedCode(null), []);
+  const reset = useCallback(() => {
+    metropolitanAudioRef.current?.pause();
+    if (metropolitanAudioRef.current) metropolitanAudioRef.current.currentTime = 0;
+    setSelectedCode(null);
+  }, []);
   const selectRegion = useCallback((code: number) => {
-    if (code === 13 && selectedCode === 13 && metropolitanAudioRef.current) {
-      metropolitanAudioRef.current.pause();
-      metropolitanAudioRef.current.currentTime = 0;
-      void metropolitanAudioRef.current.play().catch(() => undefined);
-    }
+    metropolitanAudioRef.current?.pause();
+    if (metropolitanAudioRef.current) metropolitanAudioRef.current.currentTime = 0;
+    if (code === 13) void metropolitanAudioRef.current?.play().catch(() => undefined);
     setSelectedCode(code);
-  }, [selectedCode]);
+  }, []);
 
-  useEffect(() => {
-    const audio = metropolitanAudioRef.current;
-    if (!audio) return;
-    if (selectedCode === 13) {
-      audio.currentTime = 0;
-      void audio.play().catch(() => undefined);
-    } else {
-      audio.pause();
-      audio.currentTime = 0;
-    }
-    return () => { audio.pause(); audio.currentTime = 0; };
-  }, [selectedCode]);
+  useEffect(() => () => { metropolitanAudioRef.current?.pause(); }, []);
   useEffect(() => {
     let timeout = window.setTimeout(reset, 90000);
     const extend = () => { window.clearTimeout(timeout); timeout = window.setTimeout(reset, 90000); };
