@@ -99,8 +99,8 @@ export function MapaCharlas() {
     return () => lifecycle.abort();
   }, [byRegion]);
 
-  return <main className="min-h-screen bg-[#eef5f5] text-slate-800 selection:bg-teal-200">
-    <div className="mx-auto flex min-h-screen max-w-[1600px] flex-col px-4 py-4 lg:px-7 lg:py-6">
+  return <main className="min-h-screen bg-[#eef5f5] text-slate-800 selection:bg-teal-200 lg:h-screen lg:overflow-hidden">
+    <div className="mx-auto flex min-h-screen max-w-[1600px] flex-col px-4 py-4 lg:h-full lg:overflow-hidden lg:px-7 lg:py-6">
       <header className="mb-4 flex flex-col gap-4 rounded-[1.4rem] bg-[#073b4c] px-5 py-5 text-white shadow-[0_16px_45px_rgba(7,59,76,0.16)] lg:mb-5 lg:flex-row lg:items-center lg:justify-between lg:px-7">
         <div><p className="mb-1 text-sm font-semibold tracking-[0.16em] text-teal-200 uppercase">Educación financiera</p><h1 className="text-2xl font-semibold tracking-tight lg:text-[2rem]">Charlas realizadas en Chile</h1></div>
         <div className="flex items-center gap-3 rounded-2xl bg-white/10 px-4 py-3 text-base text-teal-50"><Hand className="size-6 shrink-0 text-teal-200" aria-hidden="true" /><span>Toca una región para ver su detalle</span></div>
@@ -111,17 +111,17 @@ export function MapaCharlas() {
         <StatCard icon={<Users />} value={formatNumber(totalStudents)} label="alumnos alcanzados" loading={loading} />
       </section>
       <section className="grid min-h-0 flex-1 gap-4 lg:grid-cols-[minmax(0,1.45fr)_minmax(330px,0.78fr)] lg:gap-5">
-        <section aria-label="Mapa interactivo de Chile" className="flex min-h-[570px] flex-col rounded-[1.5rem] bg-white p-4 shadow-[0_12px_35px_rgba(15,73,83,0.09)] lg:min-h-0 lg:p-5">
+        <section aria-label="Mapa interactivo de Chile" className="flex min-h-[570px] flex-col rounded-[1.5rem] bg-white p-4 shadow-[0_12px_35px_rgba(15,73,83,0.09)] lg:h-full lg:min-h-0 lg:p-5">
           <div className="mb-3 flex items-center justify-between gap-3"><div><h2 className="text-xl font-semibold tracking-tight text-slate-800">Mapa de cobertura</h2><p className="mt-1 text-sm text-slate-500">El color indica la cantidad de charlas por región.</p></div><Button aria-label="Volver a la vista nacional" className="h-12 shrink-0 rounded-xl border-[#c7dcde] px-4 text-base text-[#075985] hover:bg-[#eef8f7]" variant="outline" onClick={reset}><RotateCcw className="size-5" /><span className="hidden sm:inline">Ver todo Chile</span></Button></div>
-          <div className="relative flex min-h-[430px] flex-1 items-center justify-center overflow-hidden rounded-2xl border border-[#d8e7e8] bg-[radial-gradient(circle_at_40%_15%,#f8fdfc_0%,#eef7f6_52%,#e6f0f0_100%)] px-2 py-3 lg:min-h-[510px]">
+          <div className="relative flex min-h-[430px] flex-1 items-center justify-center overflow-hidden rounded-2xl border border-[#d8e7e8] bg-[radial-gradient(circle_at_40%_15%,#f8fdfc_0%,#eef7f6_52%,#e6f0f0_100%)] px-2 py-3 lg:h-[clamp(360px,calc(100dvh-430px),640px)] lg:min-h-0 lg:flex-none">
             {loading && <p className="text-lg font-medium text-slate-500">Cargando mapa…</p>}
             {error && <div className="text-center"><p className="mb-3 text-lg font-medium text-slate-700">No pudimos cargar las charlas.</p><Button className="h-12 rounded-xl px-5 text-base" onClick={() => void loadData()}>Reintentar</Button></div>}
-            {!loading && !error && <ComposableMap aria-label="Mapa de las regiones de Chile" className="h-full max-h-[640px] w-full max-w-[660px]" projection="geoMercator" projectionConfig={{ center: [-71.1, -37.5], scale: 1520 }} width={560} height={700}>
+            {!loading && !error && <ComposableMap aria-label="Mapa de las regiones de Chile" className="h-full max-h-[640px] w-auto max-w-full" projection="geoMercator" projectionConfig={{ center: [-71.1, -37.5], scale: 720 }} width={560} height={700}>
               <Geographies geography="/chile-regiones.geojson">{({ geographies }) => geographies.map((geo) => {
                 const properties = geo.properties ?? {}; const code = Number(properties.codregion); const charlas = byRegion.get(code) ?? []; const isSelected = selectedCode === code; const region = regions.find((item) => item.code === code); const label = region?.name ?? properties.Region;
                 const activate = () => setSelectedCode(code);
                 // oxlint-disable-next-line jsx-a11y(prefer-tag-over-role)
-                return <Geography key={geo.rsmKey} geography={geo} aria-label={`${label}: ${charlas.length} charlas`} role="button" tabIndex={0} onClick={activate} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); activate(); } }} style={{ default: { fill: fillFor(charlas.length, maxCharlas, isSelected), stroke: '#ffffff', strokeWidth: 0.75, outline: 'none', cursor: 'pointer' }, hover: { fill: '#0b7790', stroke: '#ffffff', strokeWidth: 1.2, outline: 'none', cursor: 'pointer' }, pressed: { fill: '#054c72', stroke: '#ffffff', strokeWidth: 1.2, outline: 'none', cursor: 'pointer' } } as never} />;
+                return <Geography key={geo.rsmKey} geography={geo} aria-label={`${label}: ${charlas.length} charlas`} role="button" tabIndex={0} fill={fillFor(charlas.length, maxCharlas, isSelected)} stroke="#ffffff" strokeWidth={0.75} onClick={activate} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); activate(); } }} style={{ cursor: 'pointer', outline: 'none' }} />;
               })}</Geographies>
             </ComposableMap>}
           </div>
