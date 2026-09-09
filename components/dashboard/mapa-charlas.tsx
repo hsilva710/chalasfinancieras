@@ -151,9 +151,11 @@ export function MapaCharlas() {
         <div className="flex items-center gap-4"><img src="/isotipo.png" alt="BancoEstado" className="h-8 w-auto" /><div><p className="mb-1 text-xs font-semibold tracking-[0.1em] text-[#6b7681]">Educación Financiera - Subgerencia de Ahorro</p><h1 className="text-2xl font-semibold tracking-tight text-[#343e46] lg:text-[2rem]">Charlas realizadas en Chile</h1></div></div>
         <div className="flex flex-col items-start gap-3 lg:items-end"><div className="flex items-center gap-3 rounded-full border border-[#e1e5e9] bg-[#f7f9fa] px-4 py-2.5 text-sm text-[#6b7681]"><Hand className="size-5 shrink-0 text-[#ff7900]" aria-hidden="true" /><span>Toca una región para ver su detalle</span></div><div role="group" aria-label="Filtrar charlas por año" className="flex flex-wrap gap-2">{yearOptions.map((year) => { const isActive = selectedYear === year; const label = year === 'all' ? 'Todos los años' : String(year); return <button key={String(year)} type="button" aria-pressed={isActive} onClick={() => selectYear(year)} className={`min-h-11 rounded-full border px-4 text-sm font-semibold transition-colors focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring ${isActive ? 'border-primary bg-primary text-primary-foreground' : 'border-[#e1e5e9] bg-white text-[#6b7681] hover:bg-[#fff1e0]'}`}>{label}</button>; })}</div></div>
       </header>
-      <section aria-label="Resumen nacional" className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-3 lg:mb-5">
-        <StatCard icon={<MapPin />} value={formatNumber(activeRegions)} label="regiones visitadas" loading={loading} />
-        <StatCard icon={<School />} value={formatNumber(filteredData.length)} label="charlas realizadas" loading={loading} />
+      <section aria-label="Resumen nacional" className="mb-4 grid grid-cols-1 gap-3 lg:mb-5 lg:grid-cols-[minmax(0,1.45fr)_minmax(330px,0.78fr)] lg:gap-5">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:gap-5">
+          <StatCard icon={<MapPin />} value={formatNumber(activeRegions)} label="regiones visitadas" loading={loading} />
+          <StatCard icon={<School />} value={formatNumber(filteredData.length)} label="charlas realizadas" loading={loading} />
+        </div>
         <StatCard icon={<Users />} value={formatNumber(totalStudents)} label="alumnos alcanzados" loading={loading} />
       </section>
       <section className="grid min-h-0 flex-1 gap-4 lg:grid-cols-[minmax(0,1.45fr)_minmax(330px,0.78fr)] lg:grid-rows-[minmax(0,1fr)] lg:gap-5">
