@@ -39,6 +39,7 @@ const resolveRegion = (value: string) => {
   return regions.find((region) => region.aliases.some((alias) => clean === normalize(alias)));
 };
 const formatNumber = (value: number) => new Intl.NumberFormat('es-CL').format(value);
+const schoolPhotoSlug = (value: string) => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 const fillFor = (charlas: number, max: number, selected: boolean) => selected ? '#ff7900' : charlas === 0 ? '#c4cad0' : charlas / max > 0.72 ? '#28b4bc' : '#358dc9';
 const labelPositions: Record<number, { coordinates: [number, number]; side: 'left' | 'right' }> = {
   15: { coordinates: [-69.5, -18.5], side: 'right' }, 1: { coordinates: [-69.7, -20.4], side: 'left' },
@@ -54,6 +55,7 @@ const labelPositions: Record<number, { coordinates: [number, number]; side: 'lef
 export function MapaCharlas() {
   const [data, setData] = useState<Charla[]>([]);
   const [selectedCode, setSelectedCode] = useState<number | null>(null);
+  const [selectedSchoolKey, setSelectedSchoolKey] = useState<string | null>(null);
   const [selectedYear, setSelectedYear] = useState<number | 'all'>('all');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -80,6 +82,7 @@ export function MapaCharlas() {
     metropolitanAudioRef.current?.pause();
     if (metropolitanAudioRef.current) metropolitanAudioRef.current.currentTime = 0;
     setSelectedCode(null);
+    setSelectedSchoolKey(null);
   }, []);
   const selectYear = useCallback((year: number | 'all') => {
     reset();
@@ -90,6 +93,7 @@ export function MapaCharlas() {
     if (metropolitanAudioRef.current) metropolitanAudioRef.current.currentTime = 0;
     if (code === 13) void metropolitanAudioRef.current?.play().catch(() => undefined);
     setSelectedCode(code);
+    setSelectedSchoolKey(null);
   }, []);
 
   useEffect(() => () => { metropolitanAudioRef.current?.pause(); }, []);
@@ -112,7 +116,7 @@ export function MapaCharlas() {
   const activeRegions = [...byRegion.values()].filter((charlas) => charlas.length > 0).length;
   const maxCharlas = Math.max(1, ...[...byRegion.values()].map((charlas) => charlas.length));
   const selectedRegion = regions.find((region) => region.code === selectedCode) ?? null;
-  const selectedCharlas = selectedCode ? byRegion.get(selectedCode) ?? [] : [];
+  const selectedCharlas = useMemo(() => selectedCode ? [...(byRegion.get(selectedCode) ?? [])].sort((first, second) => first.ColegioLocacion.localeCompare(second.ColegioLocacion, 'es', { sensitivity: 'base' })) : [], [byRegion, selectedCode]);
   const selectedStudents = selectedCharlas.reduce((total, charla) => total + charla.CantidaddeAlumnos, 0);
   const selectedSchools = new Set(selectedCharlas.map((charla) => charla.ColegioLocacion)).size;
 
@@ -179,7 +183,7 @@ export function MapaCharlas() {
           <div className="mt-4 flex flex-wrap items-center justify-between gap-3 px-1"><div className="flex items-center gap-2 text-sm font-medium text-[#4c5761]"><span className="size-4 rounded-md bg-[#c4cad0] ring-1 ring-slate-400" /> Sin charlas <span className="ml-2 size-4 rounded-md bg-[#358dc9]" /> 1 charla <span className="ml-2 size-4 rounded-md bg-[#28b4bc]" /> 2 o más charlas</div><p className="text-sm text-[#6b7681]">La selección se reinicia después de 90 segundos.</p></div>
         </section>
         <aside aria-live="polite" className="rounded-2xl bg-white p-5 shadow-[0_1px_3px_rgba(28,33,38,.06)] lg:min-h-0 lg:overflow-y-auto">
-          {selectedRegion ? <RegionDetail region={selectedRegion} charlas={selectedCharlas} students={selectedStudents} schools={selectedSchools} onClose={reset} /> : <Overview regionsWithActivity={regions.filter((region) => (byRegion.get(region.code) ?? []).length > 0)} byRegion={byRegion} onSelect={selectRegion} />}
+          {selectedRegion ? <RegionDetail region={selectedRegion} charlas={selectedCharlas} students={selectedStudents} schools={selectedSchools} selectedSchoolKey={selectedSchoolKey} onSelectSchool={setSelectedSchoolKey} onClose={reset} /> : <Overview regionsWithActivity={regions.filter((region) => (byRegion.get(region.code) ?? []).length > 0)} byRegion={byRegion} onSelect={selectRegion} />}
         </aside>
       </section>
     </div>
@@ -190,6 +194,8 @@ function StatCard({ icon, value, label, loading }: { icon: ReactNode; value: str
 
 function Overview({ regionsWithActivity, byRegion, onSelect }: { regionsWithActivity: RegionMeta[]; byRegion: Map<number, Charla[]>; onSelect: (code: number) => void }) { return <div className="flex h-full flex-col"><span className="mb-4 grid size-12 place-items-center rounded-2xl bg-[#fff1e0] text-[#b85600]"><Hand className="size-6" /></span><h2 className="text-2xl font-semibold tracking-tight text-slate-800">Explora el mapa</h2><p className="mt-2 text-base leading-6 text-slate-600">Toca una región en el mapa o selecciónala desde esta lista.</p><div className="mt-6 grid gap-2 overflow-auto pr-1">{regionsWithActivity.map((region) => { const count = (byRegion.get(region.code) ?? []).length; return <button key={region.code} onClick={() => onSelect(region.code)} className="flex min-h-14 items-center justify-between rounded-full border border-[#e1e5e9] px-4 text-left transition-colors hover:bg-[#fff1e0] active:bg-[#ffdcb8] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-[#004dff]"><span className="font-semibold text-slate-700">{region.name}</span><span className="flex items-center gap-2 text-sm font-medium text-[#b85600]">{count} <span className="hidden sm:inline">charlas</span><ChevronRight className="size-5" /></span></button>; })}</div></div>; }
 
-function RegionDetail({ region, charlas, students, schools, onClose }: { region: RegionMeta; charlas: Charla[]; students: number; schools: number; onClose: () => void }) { return <div className="flex h-full flex-col"><div className="flex items-start justify-between gap-3"><div><p className="text-sm font-semibold tracking-[0.13em] text-[#6b7681] uppercase">Región seleccionada</p><h2 className="mt-1 text-2xl font-semibold tracking-tight text-slate-800">{region.name}</h2></div><Button variant="outline" className="h-12 rounded-full border-[#ff7900] px-3 text-[#b85600]" onClick={onClose} aria-label="Cerrar detalle de región"><RotateCcw className="size-5" /><span className="hidden sm:inline">Volver</span></Button></div><div className="mt-5 grid grid-cols-3 gap-2 rounded-2xl bg-[#f7f9fa] p-3 text-center"><MiniStat value={formatNumber(charlas.length)} label="charlas" /><MiniStat value={formatNumber(students)} label="alumnos" /><MiniStat value={formatNumber(schools)} label="colegios" /></div>{charlas.length === 0 ? <div className="mt-8 rounded-2xl border border-dashed border-slate-300 p-6 text-center text-slate-600">Aún no se registran charlas en esta región.</div> : <div className="mt-5 flex-1 overflow-auto pr-1"><h3 className="mb-3 text-base font-semibold text-slate-700">Charlas registradas</h3><div className="grid gap-3">{charlas.map((charla, index) => <article key={`${charla.ColegioLocacion}-${index}`} className="rounded-2xl border border-[#e1e5e9] p-4"><div className="flex items-start justify-between gap-3"><div><p className="font-semibold leading-5 text-slate-800">{charla.ColegioLocacion}</p><p className="mt-1 flex items-center gap-1.5 text-sm text-slate-500"><MapPin className="size-4 text-[#6b7681]" />{charla.Lugar}</p></div><span className="shrink-0 rounded-full bg-[#e2e9ff] px-2.5 py-1.5 text-sm font-semibold text-[#0038b8]">{formatNumber(charla.CantidaddeAlumnos)} alumnos</span></div></article>)}</div></div>}<div className="mt-5 flex items-center gap-2 text-sm text-slate-500"><Building2 className="size-4" />Datos cargados desde el archivo de charlas.</div></div>; }
+function RegionDetail({ region, charlas, students, schools, selectedSchoolKey, onSelectSchool, onClose }: { region: RegionMeta; charlas: Charla[]; students: number; schools: number; selectedSchoolKey: string | null; onSelectSchool: (key: string | null) => void; onClose: () => void }) { return <div className="flex h-full flex-col"><div className="flex items-start justify-between gap-3"><div><p className="text-sm font-semibold tracking-[0.13em] text-[#6b7681] uppercase">Región seleccionada</p><h2 className="mt-1 text-2xl font-semibold tracking-tight text-slate-800">{region.name}</h2></div><Button variant="outline" className="h-12 rounded-full border-[#ff7900] px-3 text-[#b85600]" onClick={onClose} aria-label="Cerrar detalle de región"><RotateCcw className="size-5" /><span className="hidden sm:inline">Volver</span></Button></div><div className="mt-5 grid grid-cols-3 gap-2 rounded-2xl bg-[#f7f9fa] p-3 text-center"><MiniStat value={formatNumber(charlas.length)} label="charlas" /><MiniStat value={formatNumber(students)} label="alumnos" /><MiniStat value={formatNumber(schools)} label="colegios" /></div>{charlas.length === 0 ? <div className="mt-8 rounded-2xl border border-dashed border-slate-300 p-6 text-center text-slate-600">Aún no se registran charlas en esta región.</div> : <div className="mt-5 flex-1 overflow-auto pr-1"><h3 className="mb-3 text-base font-semibold text-slate-700">Charlas registradas</h3><div className="grid gap-3">{charlas.map((charla, index) => { const schoolKey = `${charla.Año}-${charla.Lugar}-${charla.ColegioLocacion}-${index}`; const isOpen = schoolKey === selectedSchoolKey; return <article key={schoolKey} className="rounded-2xl border border-[#e1e5e9] p-4"><div className="flex items-start justify-between gap-3"><div><button type="button" onClick={() => onSelectSchool(isOpen ? null : schoolKey)} aria-expanded={isOpen} className="rounded text-left font-semibold leading-5 text-slate-800 underline-offset-4 transition-colors hover:text-[#b85600] hover:underline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-[#004dff]">{charla.ColegioLocacion}</button><p className="mt-1 flex items-center gap-1.5 text-sm text-slate-500"><MapPin className="size-4 text-[#6b7681]" />{charla.Lugar}</p></div><span className="shrink-0 rounded-full bg-[#e2e9ff] px-2.5 py-1.5 text-sm font-semibold text-[#0038b8]">{formatNumber(charla.CantidaddeAlumnos)} alumnos</span></div>{isOpen && <div className="mt-3 overflow-hidden rounded-2xl border border-[#e1e5e9] bg-[#f7f9fa]"><SchoolPhoto schoolName={charla.ColegioLocacion} /><p className="px-3 py-2 text-xs font-medium text-[#6b7681]">Foto referencial</p></div>}</article>; })}</div></div>}<div className="mt-5 flex items-center gap-2 text-sm text-slate-500"><Building2 className="size-4" />Datos cargados desde el archivo de charlas.</div></div>; }
+
+function SchoolPhoto({ schoolName }: { schoolName: string }) { const fallback = '/colegios/foto-referencial-colegio.png'; const [src, setSrc] = useState(`/colegios/${schoolPhotoSlug(schoolName)}.jpg`); return <img src={src} alt={`Foto referencial de ${schoolName}`} className="aspect-[4/3] w-full object-cover" onError={() => { if (src !== fallback) setSrc(fallback); }} />; }
 
 function MiniStat({ value, label }: { value: string; label: string }) { return <div><p className="text-xl font-semibold text-slate-800">{value}</p><p className="text-xs font-medium text-slate-500">{label}</p></div>; }
