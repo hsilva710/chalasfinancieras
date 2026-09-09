@@ -144,7 +144,7 @@ export function MapaCharlas() {
     return () => lifecycle.abort();
   }, [byRegion, selectRegion]);
 
-  return <main className="min-h-screen bg-[#f7f9fa] text-slate-800 selection:bg-[#fff1e0] lg:h-screen lg:overflow-hidden">
+  return <main className="min-h-screen bg-[#404040] text-slate-800 selection:bg-[#fff1e0] lg:h-screen lg:overflow-hidden">
     <audio ref={metropolitanAudioRef} src="/audio/region-metropolitana.mp3" preload="auto" aria-hidden="true" />
     <div className="mx-auto flex min-h-screen max-w-[1600px] flex-col px-4 py-4 lg:h-full lg:overflow-hidden lg:px-7 lg:py-6">
       <header className="mb-4 flex flex-col gap-4 rounded-b-none border-b border-[#e1e5e9] bg-white px-5 py-4 shadow-[0_1px_3px_rgba(28,33,38,.06)] lg:mb-5 lg:flex-row lg:items-center lg:justify-between lg:px-7">
@@ -163,7 +163,7 @@ export function MapaCharlas() {
             {loading && <p className="text-lg font-medium text-slate-500">Cargando mapa…</p>}
             {error && <div className="text-center"><p className="mb-3 text-lg font-medium text-slate-700">No pudimos cargar las charlas.</p><Button className="h-12 rounded-full px-5 text-base" onClick={() => void loadData()}>Reintentar</Button></div>}
             {!loading && !error && <ComposableMap aria-label="Mapa de las regiones de Chile. Usa dos dedos para acercar o alejar y un dedo para moverlo." className="h-full w-auto max-w-full -translate-y-4 touch-none" projection="geoMercator" projectionConfig={{ center: [-71.1, -37.5], scale: mapScale }} width={560} height={700}>
-              <ZoomableGroup key={mapInteractionKey} minZoom={1} maxZoom={4}>
+              <ZoomableGroup key={mapInteractionKey} center={[-71.1, -37.5]} minZoom={1} maxZoom={4}>
               <Geographies geography="/chile-regiones.geojson">{({ geographies }) => <>
                 {geographies.map((geo) => {
                   const properties = geo.properties ?? {}; const code = Number(properties.codregion); const charlas = byRegion.get(code) ?? []; const isSelected = selectedCode === code; const region = regions.find((item) => item.code === code); const label = region?.name ?? properties.Region;
