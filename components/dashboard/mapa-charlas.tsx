@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { ComposableMap, Geographies, Geography, Marker } from 'react-simple-maps';
+import { ComposableMap, Geographies, Geography, Marker, ZoomableGroup } from 'react-simple-maps';
 import { Building2, ChevronRight, Hand, MapPin, RotateCcw, School, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -57,6 +57,7 @@ export function MapaCharlas() {
   const [selectedCode, setSelectedCode] = useState<number | null>(null);
   const [selectedSchoolKey, setSelectedSchoolKey] = useState<string | null>(null);
   const [selectedYear, setSelectedYear] = useState<number | 'all'>('all');
+  const [mapInteractionKey, setMapInteractionKey] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [mapScale, setMapScale] = useState(830);
@@ -83,6 +84,7 @@ export function MapaCharlas() {
     if (metropolitanAudioRef.current) metropolitanAudioRef.current.currentTime = 0;
     setSelectedCode(null);
     setSelectedSchoolKey(null);
+    setMapInteractionKey((key) => key + 1);
   }, []);
   const selectYear = useCallback((year: number | 'all') => {
     reset();
@@ -160,7 +162,8 @@ export function MapaCharlas() {
           <div className="relative flex min-h-[430px] flex-1 items-center justify-center overflow-hidden rounded-2xl border border-[#e1e5e9] bg-[#f7f9fa] px-2 py-3 lg:min-h-0">
             {loading && <p className="text-lg font-medium text-slate-500">Cargando mapa…</p>}
             {error && <div className="text-center"><p className="mb-3 text-lg font-medium text-slate-700">No pudimos cargar las charlas.</p><Button className="h-12 rounded-full px-5 text-base" onClick={() => void loadData()}>Reintentar</Button></div>}
-            {!loading && !error && <ComposableMap aria-label="Mapa de las regiones de Chile" className="h-full w-auto max-w-full -translate-y-4" projection="geoMercator" projectionConfig={{ center: [-71.1, -37.5], scale: mapScale }} width={560} height={700}>
+            {!loading && !error && <ComposableMap aria-label="Mapa de las regiones de Chile. Usa dos dedos para acercar o alejar y un dedo para moverlo." className="h-full w-auto max-w-full -translate-y-4 touch-none" projection="geoMercator" projectionConfig={{ center: [-71.1, -37.5], scale: mapScale }} width={560} height={700}>
+              <ZoomableGroup key={mapInteractionKey} minZoom={1} maxZoom={4}>
               <Geographies geography="/chile-regiones.geojson">{({ geographies }) => <>
                 {geographies.map((geo) => {
                   const properties = geo.properties ?? {}; const code = Number(properties.codregion); const charlas = byRegion.get(code) ?? []; const isSelected = selectedCode === code; const region = regions.find((item) => item.code === code); const label = region?.name ?? properties.Region;
@@ -178,6 +181,7 @@ export function MapaCharlas() {
                   </Marker>;
                 })}
               </>}</Geographies>
+              </ZoomableGroup>
             </ComposableMap>}
           </div>
           <div className="mt-4 flex flex-wrap items-center justify-between gap-3 px-1"><div className="flex items-center gap-2 text-sm font-medium text-[#4c5761]"><span className="size-4 rounded-md bg-[#c4cad0] ring-1 ring-slate-400" /> Sin charlas <span className="ml-2 size-4 rounded-md bg-[#358dc9]" /> 1 charla <span className="ml-2 size-4 rounded-md bg-[#28b4bc]" /> 2 o más charlas</div><p className="text-sm text-[#6b7681]">La selección se reinicia después de 90 segundos.</p></div>
