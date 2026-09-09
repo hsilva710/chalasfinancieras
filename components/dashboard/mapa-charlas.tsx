@@ -46,6 +46,7 @@ export function MapaCharlas() {
   const [selectedCode, setSelectedCode] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [mapScale, setMapScale] = useState(830);
 
   const loadData = useCallback(async () => {
     try {
@@ -55,6 +56,13 @@ export function MapaCharlas() {
     } catch { setError(true); } finally { setLoading(false); }
   }, []);
   useEffect(() => { void loadData(); }, [loadData]);
+
+  useEffect(() => {
+    const fitMapToScreen = () => setMapScale(Math.round(Math.min(1150, Math.max(830, 830 + (window.innerHeight - 912) * 0.39))));
+    fitMapToScreen();
+    window.addEventListener('resize', fitMapToScreen);
+    return () => window.removeEventListener('resize', fitMapToScreen);
+  }, []);
 
   const reset = useCallback(() => setSelectedCode(null), []);
   useEffect(() => {
@@ -116,7 +124,7 @@ export function MapaCharlas() {
           <div className="relative flex min-h-[430px] flex-1 items-center justify-center overflow-hidden rounded-2xl border border-[#d8e7e8] bg-[radial-gradient(circle_at_40%_15%,#f8fdfc_0%,#eef7f6_52%,#e6f0f0_100%)] px-2 py-3 lg:min-h-0">
             {loading && <p className="text-lg font-medium text-slate-500">Cargando mapa…</p>}
             {error && <div className="text-center"><p className="mb-3 text-lg font-medium text-slate-700">No pudimos cargar las charlas.</p><Button className="h-12 rounded-xl px-5 text-base" onClick={() => void loadData()}>Reintentar</Button></div>}
-            {!loading && !error && <ComposableMap aria-label="Mapa de las regiones de Chile" className="h-full w-auto max-w-full -translate-y-4" projection="geoMercator" projectionConfig={{ center: [-71.1, -37.5], scale: 830 }} width={560} height={700}>
+            {!loading && !error && <ComposableMap aria-label="Mapa de las regiones de Chile" className="h-full w-auto max-w-full -translate-y-4" projection="geoMercator" projectionConfig={{ center: [-71.1, -37.5], scale: mapScale }} width={560} height={700}>
               <Geographies geography="/chile-regiones.geojson">{({ geographies }) => geographies.map((geo) => {
                 const properties = geo.properties ?? {}; const code = Number(properties.codregion); const charlas = byRegion.get(code) ?? []; const isSelected = selectedCode === code; const region = regions.find((item) => item.code === code); const label = region?.name ?? properties.Region;
                 const activate = () => setSelectedCode(code);
