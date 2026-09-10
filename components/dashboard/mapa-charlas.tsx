@@ -57,6 +57,7 @@ export function MapaCharlas() {
   const [data, setData] = useState<Charla[]>([]);
   const [selectedCode, setSelectedCode] = useState<number | null>(null);
   const [selectedSchoolKey, setSelectedSchoolKey] = useState<string | null>(null);
+  const [isMetropolitanVideoOpen, setIsMetropolitanVideoOpen] = useState(false);
   const [selectedYear, setSelectedYear] = useState<number | 'all'>('all');
   const [mapInteractionKey, setMapInteractionKey] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -85,6 +86,7 @@ export function MapaCharlas() {
     if (metropolitanAudioRef.current) metropolitanAudioRef.current.currentTime = 0;
     setSelectedCode(null);
     setSelectedSchoolKey(null);
+    setIsMetropolitanVideoOpen(false);
     setMapInteractionKey((key) => key + 1);
   }, []);
   const selectYear = useCallback((year: number | 'all') => {
@@ -97,6 +99,7 @@ export function MapaCharlas() {
     if (code === 13) void metropolitanAudioRef.current?.play().catch(() => undefined);
     setSelectedCode(code);
     setSelectedSchoolKey(null);
+    setIsMetropolitanVideoOpen(code === 13);
   }, []);
 
   useEffect(() => () => { metropolitanAudioRef.current?.pause(); }, []);
@@ -147,6 +150,7 @@ export function MapaCharlas() {
 
   return <main className="min-h-screen bg-[#404040] text-slate-800 selection:bg-[#fff1e0] lg:h-screen lg:overflow-hidden">
     <audio ref={metropolitanAudioRef} src="/audio/region-metropolitana.mp3" preload="auto" aria-hidden="true" />
+    {isMetropolitanVideoOpen && <div role="dialog" aria-modal="true" aria-label="Video de la Región Metropolitana" className="fixed inset-0 z-50 grid place-items-center bg-black/80 p-4"><div className="relative w-full max-w-4xl"><button type="button" onClick={() => setIsMetropolitanVideoOpen(false)} className="absolute right-2 top-2 z-10 grid size-11 place-items-center rounded-full bg-white text-slate-800 shadow-lg focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-white" aria-label="Cerrar video"><X className="size-6" /></button><video src="/videos/region-metropolitana.mp4" muted autoPlay playsInline controls className="max-h-[86vh] w-full rounded-2xl bg-black shadow-2xl" /></div></div>}
     <div className="mx-auto flex min-h-screen max-w-[1600px] flex-col px-4 py-4 lg:h-full lg:overflow-hidden lg:px-7 lg:py-6">
       <header className="mb-4 flex flex-col gap-4 rounded-2xl border border-[#e1e5e9] bg-white px-5 py-4 shadow-[0_1px_3px_rgba(28,33,38,.06)] lg:mb-5 lg:flex-row lg:items-center lg:justify-between lg:px-7">
         <div className="flex items-center gap-4"><img src="/isotipo.png" alt="BancoEstado" className="h-8 w-auto" /><div><p className="mb-1 text-xs font-semibold tracking-[0.1em] text-[#6b7681]">Educación Financiera - Subgerencia de Ahorro</p><h1 className="text-2xl font-semibold tracking-tight text-[#343e46] lg:text-[2rem]">Charlas realizadas en Chile</h1></div></div>
