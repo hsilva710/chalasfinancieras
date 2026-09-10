@@ -107,13 +107,13 @@ export function MapaCharlas() {
     reset();
     setSelectedYear(year);
   }, [reset]);
-  const selectRegion = useCallback((code: number) => {
+  const selectRegion = useCallback((code: number, showVideo = false) => {
     metropolitanAudioRef.current?.pause();
     if (metropolitanAudioRef.current) metropolitanAudioRef.current.currentTime = 0;
     if (code === 13) void metropolitanAudioRef.current?.play().catch(() => undefined);
     setSelectedCode(code);
     setSelectedSchoolKey(null);
-    setIsMetropolitanVideoOpen(code === 13);
+    setIsMetropolitanVideoOpen(showVideo && code === 13);
   }, []);
 
   useEffect(() => () => { metropolitanAudioRef.current?.pause(); }, []);
@@ -188,7 +188,7 @@ export function MapaCharlas() {
               <Geographies geography="/chile-regiones.geojson">{({ geographies }) => <>
                 {geographies.map((geo) => {
                   const properties = geo.properties ?? {}; const code = Number(properties.codregion); const charlas = byRegion.get(code) ?? []; const isSelected = selectedCode === code; const region = regions.find((item) => item.code === code); const label = region?.name ?? properties.Region;
-                  const activate = () => selectRegion(code);
+                  const activate = () => selectRegion(code, true);
                   // oxlint-disable-next-line jsx-a11y(prefer-tag-over-role)
                   return <Geography key={geo.rsmKey} geography={geo} aria-label={`${label}: ${charlas.length} charlas`} role="button" tabIndex={0} fill={fillFor(charlas.length, maxCharlas, isSelected)} stroke="#ffffff" strokeWidth={0.75} onClick={activate} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); activate(); } }} style={{ cursor: 'pointer', outline: 'none' }} />;
                 })}
