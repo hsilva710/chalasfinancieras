@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { ComposableMap, Geographies, Geography, Marker, ZoomableGroup } from 'react-simple-maps';
 import { Building2, ChevronRight, Hand, MapPin, Play, RotateCcw, School, Users, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -77,7 +77,6 @@ export function MapaCharlas() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [mapScale, setMapScale] = useState(830);
-  const metropolitanAudioRef = useRef<HTMLAudioElement>(null);
 
   const loadData = useCallback(async () => {
     try {
@@ -96,8 +95,6 @@ export function MapaCharlas() {
   }, []);
 
   const reset = useCallback(() => {
-    metropolitanAudioRef.current?.pause();
-    if (metropolitanAudioRef.current) metropolitanAudioRef.current.currentTime = 0;
     setSelectedCode(null);
     setSelectedSchoolKey(null);
     setIsMetropolitanVideoOpen(false);
@@ -108,15 +105,11 @@ export function MapaCharlas() {
     setSelectedYear(year);
   }, [reset]);
   const selectRegion = useCallback((code: number, showVideo = false) => {
-    metropolitanAudioRef.current?.pause();
-    if (metropolitanAudioRef.current) metropolitanAudioRef.current.currentTime = 0;
-    if (code === 13) void metropolitanAudioRef.current?.play().catch(() => undefined);
     setSelectedCode(code);
     setSelectedSchoolKey(null);
     setIsMetropolitanVideoOpen(showVideo && code === 13);
   }, []);
 
-  useEffect(() => () => { metropolitanAudioRef.current?.pause(); }, []);
   useEffect(() => {
     let timeout = window.setTimeout(reset, 90000);
     const extend = () => { window.clearTimeout(timeout); timeout = window.setTimeout(reset, 90000); };
@@ -163,7 +156,6 @@ export function MapaCharlas() {
   }, [byRegion, selectRegion]);
 
   return <main className="min-h-screen bg-[#404040] text-slate-800 selection:bg-[#fff1e0] lg:h-screen lg:overflow-hidden">
-    <audio ref={metropolitanAudioRef} src="/audio/region-metropolitana.mp3" preload="auto" aria-hidden="true" />
     {isMetropolitanVideoOpen && <div role="dialog" aria-modal="true" aria-label="Video de la Región Metropolitana" className="fixed inset-0 z-50 grid place-items-center bg-black/80 p-4"><div className="relative w-full max-w-4xl"><button type="button" onClick={() => setIsMetropolitanVideoOpen(false)} className="absolute right-2 top-2 z-10 grid size-11 place-items-center rounded-full bg-white text-slate-800 shadow-lg focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-white" aria-label="Cerrar video"><X className="size-6" /></button><video src="/videos/region-metropolitana.mp4" muted autoPlay playsInline controls className="max-h-[86vh] w-full rounded-2xl bg-black shadow-2xl" /></div></div>}
     <div className="mx-auto flex min-h-screen max-w-[1600px] flex-col px-4 py-4 lg:h-full lg:overflow-hidden lg:px-7 lg:py-6">
       <header className="mb-4 flex flex-col gap-4 rounded-2xl border border-[#e1e5e9] bg-white px-5 py-4 shadow-[0_1px_3px_rgba(28,33,38,.06)] lg:mb-5 lg:flex-row lg:items-center lg:justify-between lg:px-7">
